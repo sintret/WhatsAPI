@@ -5,89 +5,83 @@ namespace sintret\whatsapp\models;
 use Yii;
 
 /**
- * This is the model class for table "chat".
+ * This is the model class for table "whatsapp".
  *
  * @property integer $id
- * @property string $message
  * @property integer $userId
+ * @property integer $type
+ * @property integer $fromId
+ * @property string $to
+ * @property string $message
+ * @property string $image
+ * @property string $audio
+ * @property string $video
+ * @property string $location
+ * @property string $lat
+ * @property string $lon
+ * @property string $ip
  * @property string $updateDate
+ * @property string $createDate
+ *
+ * @property WhatsappFrom $from
  */
-class Whatsapp extends \yii\db\ActiveRecord {
-
-    public $userModel;
-    public $userField;
-
+class Whatsapp extends \yii\db\ActiveRecord
+{
+    public static $typies = [1=>'Send Message','Update Status','Send Broadcast','Inbox'];
+    
+    
     /**
      * @inheritdoc
      */
-    public static function tableName() {
+    public static function tableName()
+    {
         return 'whatsapp';
     }
 
     /**
      * @inheritdoc
      */
-    public function rules() {
+    public function rules()
+    {
         return [
-            [['message'], 'required'],
-            [['userId'], 'integer'],
-            [['updateDate', 'message'], 'safe']
+            [['userId', 'type', 'fromId'], 'integer'],
+            [['to', 'message'], 'required'],
+            [['message'], 'string'],
+            [['updateDate', 'createDate'], 'safe'],
+            [['to', 'lat', 'lon', 'ip'], 'string', 'max' => 128],
+            [['image', 'audio', 'video', 'location'], 'string', 'max' => 255]
         ];
-    }
-
-    public function getUser() {
-        if (isset($this->userModel))
-            return $this->hasOne($this->userModel, ['id' => 'userId']);
-        else
-            return $this->hasOne(Yii::$app->getUser()->identityClass, ['id' => 'userId']);
     }
 
     /**
      * @inheritdoc
      */
-    public function attributeLabels() {
+    public function attributeLabels()
+    {
         return [
             'id' => 'ID',
-            'message' => 'Message',
             'userId' => 'User',
+            'type' => 'Type',
+            'fromId' => 'From',
+            'to' => 'To',
+            'message' => 'Message',
+            'image' => 'Image',
+            'audio' => 'Audio',
+            'video' => 'Video',
+            'location' => 'Location',
+            'lat' => 'Lat',
+            'lon' => 'Lon',
+            'ip' => 'Ip',
             'updateDate' => 'Update Date',
+            'createDate' => 'Create Date',
         ];
     }
 
-    public function beforeSave($insert) {
-        $this->userId = Yii::$app->user->id;
-        return parent::beforeSave($insert);
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getFrom()
+    {
+        return $this->hasOne(WhatsappFrom::className(), ['id' => 'fromId']);
     }
-
-    public static function records() {
-        return static::find()->orderBy('id desc')->limit(10)->all();
-    }
-
-    public function data() {
-        $userField = $this->userField;
-        $output = '';
-        $models = Chat::records();
-        if ($models)
-            foreach ($models as $model) {
-                if (isset($model->user->$userField)) {
-                    $avatar = $model->user->$userField;
-                } else{
-                    $avatar = Yii::$app->assetManager->getPublishedUrl("@vendor/sintret/yii2-chat-adminlte/assets/img/avatar.png");
-                }
-                    
-                $output .= '<div class="item">
-                <img class="online" alt="user image" src="' . $avatar . '">
-                <p class="message">
-                    <a class="name" href="#">
-                        <small class="text-muted pull-right" style="color:green"><i class="fa fa-clock-o"></i> ' . \kartik\helpers\Enum::timeElapsed($model->updateDate) . '</small>
-                        ' . $model->user->username . '
-                    </a>
-                   ' . $model->message . '
-                </p>
-            </div>';
-            }
-
-        return $output;
-    }
-
 }
