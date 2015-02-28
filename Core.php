@@ -10,14 +10,14 @@ namespace sintret\whatsapp;
 
 use Yii;
 use yii\base\Widget;
-use sintret\whatsapp\models\Chat;
+use sintret\whatsapp\models\Whatsapp;
 
 /**
  * @author Andy Fitria <sintret@gmail.com>
  */
 class Core extends Widget {
 
-    public $sourcePath = '@vendor/sintret/WhatsAPI/assets';
+    public $sourcePath = '@vendor/sintret/whatsapp/assets';
     public $css = [
     ];
     public $js = [ // Configured conditionally (source/minified) during init()
@@ -45,7 +45,7 @@ class Core extends Widget {
         }
 
         $this->model->userField = $this->userField;
-        Yii::$app->assetManager->publish("@vendor/sintret/yii2-chat-adminlte/assets/img/avatar.png");
+       // Yii::$app->assetManager->publish("@vendor/sintret/whatsapp/assets/img/avatar.png");
 
         parent::init();
     }
