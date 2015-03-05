@@ -21,13 +21,13 @@ class WhatsApp {
     public function getConnection() {
         $w = new \WhatsProt($this->number, 0, $this->app, true);
         $w->connect();
-        $w->loginWithPassword($password);
+        $w->loginWithPassword($this->password);
         $this->connect = $w;
     }
 
     public function send($target, $message) {
-        $this->connect->SendPresenceSubscription($target); //Let us first send presence to user 
-        $this->connect->sendMessage($target, $message); // Send Message 
+        $this->connect->SendPresenceSubscription($target); //Let us first send presence to user
+        $this->connect->sendMessage($target, $message); // Send Message
     }
 
 }
