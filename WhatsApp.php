@@ -10,16 +10,18 @@ class WhatsApp {
     public $app;
     public $password;
     public $connect;
+    public $debug;
 
-    public function __construct($number, $app, $password) {
+    public function __construct($number, $app, $password,$debug=true) {
         $this->number = $number;
         $this->app = $app;
         $this->password = $password;
+        $this->debug=$debug;
         $this->getConnection();
     }
 
     public function getConnection() {
-        $w = new \WhatsProt($this->number, 0, $this->app, true);
+        $w = new \WhatsProt($this->number, 0, $this->app, $this->debug);
         $w->connect();
         $w->loginWithPassword($this->password);
         $this->connect = $w;
