@@ -12,7 +12,7 @@ class WhatsApp {
     public $connect;
     public $debug;
 
-    public function __construct($number, $app, $password,$debug=true) {
+    public function __construct($number, $app, $password,$debug=false) {
         $this->number = $number;
         $this->app = $app;
         $this->password = $password;
